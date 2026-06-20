@@ -1,0 +1,21 @@
+# Cloudflare Account ID and API Token
+cloudflare_account_id = "your-account-id"
+cloudflare_api_token = "your-cloudflare-api-token"
+
+# GitHub OAuth App Credentials
+github_client_id     = "your-github-client-id"
+github_client_secret = "your-github-client-secret"
+
+# Zero Trust Organization Settings
+zero_trust_org_name          = "My Zero Trust Org"
+zero_trust_auth_domain       = "mywarporg.cloudflareaccess.com"
+zero_trust_is_ui_read_only   = false
+
+# Identity Provider Settings
+github_idp_name = "GitHub"
+
+# WARP Enrollment Policy Settings
+warp_enrollment_policy_name                          = "Allow GitHub Enrollment"
+warp_enrollment_policy_decision                      = "allow"
+warp_enrollment_policy_include_emails                = ["yourgithubemail@example.com"]
+warp_enrollment_policy_purpose_justification_required = false
