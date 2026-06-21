@@ -111,3 +111,24 @@ The `result[].id` field in the JSON response is your Account ID.
 - **cloudflare_zero_trust_organization**: Your Zero Trust organization
 - **cloudflare_zero_trust_access_identity_provider**: GitHub identity provider for authentication
 - **cloudflare_zero_trust_access_policy**: Device enrollment policy allowing specified GitHub users
+
+---
+
+## Usage as a Module
+
+Reference this repository as a Terraform module in your own configurations:
+
+```hcl
+module "zero_trust_warp" {
+  source = "github.com/marcuwynu23/terraform-cloudflare-zero-trust-warp?ref=main"
+
+  cloudflare_account_id = var.cloudflare_account_id
+  cloudflare_api_token  = var.cloudflare_api_token
+  github_client_id      = var.github_client_id
+  github_client_secret  = var.github_client_secret
+
+  warp_enrollment_policy_include_emails = ["your-team@example.com"]
+}
+```
+
+All [variables](#variables) documented below are available when using this as a module.
