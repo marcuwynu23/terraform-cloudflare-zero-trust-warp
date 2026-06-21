@@ -131,4 +131,21 @@ module "zero_trust_warp" {
 }
 ```
 
-All [variables](#variables) documented below are available when using this as a module.
+---
+
+## Variables
+
+| Variable | Description | Type | Default |
+|----------|-------------|------|---------|
+| `cloudflare_account_id` | Cloudflare Account ID | `string` | (required) |
+| `cloudflare_api_token` | Cloudflare API Token | `string` | (required, sensitive) |
+| `github_client_id` | GitHub OAuth App Client ID | `string` | (required) |
+| `github_client_secret` | GitHub OAuth App Client Secret | `string` | (required, sensitive) |
+| `zero_trust_org_name` | Zero Trust organization name | `string` | `"My Zero Trust Org"` |
+| `zero_trust_auth_domain` | Cloudflare Access auth domain | `string` | `"mywarporg.cloudflareaccess.com"` |
+| `zero_trust_is_ui_read_only` | Restrict UI to read-only | `bool` | `false` |
+| `github_idp_name` | GitHub identity provider name | `string` | `"GitHub"` |
+| `warp_enrollment_policy_name` | WARP enrollment policy name | `string` | `"Allow GitHub Enrollment"` |
+| `warp_enrollment_policy_decision` | Policy decision (allow/deny) | `string` | `"allow"` |
+| `warp_enrollment_policy_include_emails` | Emails allowed to enroll | `list(string)` | `["yourgithubemail@example.com"]` |
+| `warp_enrollment_policy_purpose_justification_required` | Require purpose justification | `bool` | `false` |
