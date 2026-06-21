@@ -112,8 +112,6 @@ The `result[].id` field in the JSON response is your Account ID.
 - **cloudflare_zero_trust_access_identity_provider**: GitHub identity provider for authentication
 - **cloudflare_zero_trust_access_policy**: Device enrollment policy allowing specified GitHub users
 
----
-
 ## Usage as a Module
 
 Reference this repository as a Terraform module in your own configurations:
@@ -130,8 +128,6 @@ module "zero_trust_warp" {
   warp_enrollment_policy_include_emails = ["your-team@example.com"]
 }
 ```
-
----
 
 ## Variables
 
