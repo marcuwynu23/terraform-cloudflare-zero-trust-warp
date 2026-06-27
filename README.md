@@ -116,18 +116,34 @@ The `result[].id` field in the JSON response is your Account ID.
 
 Reference this repository as a Terraform module in your own configurations:
 
-```hcl
-module "zero_trust_warp" {
-  source = "github.com/marcuwynu23/terraform-cloudflare-zero-trust-warp?ref=main"
-
-  cloudflare_account_id = var.cloudflare_account_id
-  cloudflare_api_token  = var.cloudflare_api_token
-  github_client_id      = var.github_client_id
-  github_client_secret  = var.github_client_secret
-
-  warp_enrollment_policy_include_emails = ["your-team@example.com"]
-}
-```
+> **Option 1**: Terraform Registry (recommended)
+> ```hcl
+> module "zero-trust-warp" {
+>   source  = "marcuwynu23/zero-trust-warp/cloudflare"
+>   version = "1.0.0"
+>
+>   cloudflare_account_id = var.cloudflare_account_id
+>   cloudflare_api_token  = var.cloudflare_api_token
+>   github_client_id      = var.github_client_id
+>   github_client_secret  = var.github_client_secret
+>
+>   warp_enrollment_policy_include_emails = ["your-team@example.com"]
+> }
+> ```
+>
+> **Option 2**: GitHub source
+> ```hcl
+> module "zero-trust-warp" {
+>   source = "github.com/marcuwynu23/terraform-cloudflare-zero-trust-warp?ref=main"
+>
+>   cloudflare_account_id = var.cloudflare_account_id
+>   cloudflare_api_token  = var.cloudflare_api_token
+>   github_client_id      = var.github_client_id
+>   github_client_secret  = var.github_client_secret
+>
+>   warp_enrollment_policy_include_emails = ["your-team@example.com"]
+> }
+> ```
 
 ## Variables
 
