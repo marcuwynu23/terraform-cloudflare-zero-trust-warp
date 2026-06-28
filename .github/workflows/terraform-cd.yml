@@ -1,0 +1,105 @@
+name: CD - Cloudflare Zero Trust WARP (Apply / Destroy)
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: Terraform operation
+        required: true
+        type: choice
+        options:
+          - apply
+          - destroy
+        default: apply
+      cloudflare_account_id:
+        description: Cloudflare Account ID
+        required: true
+        type: string
+      github_client_id:
+        description: GitHub OAuth Client ID
+        required: true
+        type: string
+      zero_trust_org_name:
+        description: Zero Trust Organization name
+        required: true
+        type: string
+        default: My Zero Trust Org
+      zero_trust_auth_domain:
+        description: Cloudflare Access auth domain
+        required: true
+        type: string
+        default: mywarporg.cloudflareaccess.com
+      zero_trust_is_ui_read_only:
+        description: UI read-only mode
+        required: false
+        type: boolean
+        default: false
+      github_idp_name:
+        description: GitHub identity provider name
+        required: true
+        type: string
+        default: GitHub
+      warp_enrollment_policy_name:
+        description: WARP device enrollment policy name
+        required: true
+        type: string
+        default: Allow GitHub Enrollment
+      warp_enrollment_policy_decision:
+        description: WARP enrollment policy decision (allow/deny)
+        required: true
+        type: string
+        default: allow
+      warp_enrollment_policy_include_emails:
+        description: Allowed emails as HCL list, e.g. ["user@example.com"]
+        required: false
+        type: string
+        default: '["yourgithubemail@example.com"]'
+      warp_enrollment_policy_purpose_justification_required:
+        description: Require purpose justification for enrollment
+        required: false
+        type: boolean
+        default: false
+
+env:
+  TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  TF_VAR_github_client_secret: ${{ secrets.GITHUB_CLIENT_SECRET }}
+
+jobs:
+  provision:
+    name: Terraform ${{ github.event.inputs.command }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: latest
+      - name: Terraform Init
+        run: terraform init
+      - name: Terraform Plan
+        run: |
+          terraform plan ${{ github.event.inputs.command == 'destroy' && '-destroy' || '' }} \
+            -var="cloudflare_account_id=${{ github.event.inputs.cloudflare_account_id }}" \
+            -var="github_client_id=${{ github.event.inputs.github_client_id }}" \
+            -var="zero_trust_org_name=${{ github.event.inputs.zero_trust_org_name }}" \
+            -var="zero_trust_auth_domain=${{ github.event.inputs.zero_trust_auth_domain }}" \
+            -var="zero_trust_is_ui_read_only=${{ github.event.inputs.zero_trust_is_ui_read_only }}" \
+            -var="github_idp_name=${{ github.event.inputs.github_idp_name }}" \
+            -var="warp_enrollment_policy_name=${{ github.event.inputs.warp_enrollment_policy_name }}" \
+            -var="warp_enrollment_policy_decision=${{ github.event.inputs.warp_enrollment_policy_decision }}" \
+            -var="warp_enrollment_policy_include_emails=${{ github.event.inputs.warp_enrollment_policy_include_emails }}" \
+            -var="warp_enrollment_policy_purpose_justification_required=${{ github.event.inputs.warp_enrollment_policy_purpose_justification_required }}"
+      - name: Terraform Apply / Destroy
+        run: |
+          terraform ${{ github.event.inputs.command }} -auto-approve \
+            -var="cloudflare_account_id=${{ github.event.inputs.cloudflare_account_id }}" \
+            -var="github_client_id=${{ github.event.inputs.github_client_id }}" \
+            -var="zero_trust_org_name=${{ github.event.inputs.zero_trust_org_name }}" \
+            -var="zero_trust_auth_domain=${{ github.event.inputs.zero_trust_auth_domain }}" \
+            -var="zero_trust_is_ui_read_only=${{ github.event.inputs.zero_trust_is_ui_read_only }}" \
+            -var="github_idp_name=${{ github.event.inputs.github_idp_name }}" \
+            -var="warp_enrollment_policy_name=${{ github.event.inputs.warp_enrollment_policy_name }}" \
+            -var="warp_enrollment_policy_decision=${{ github.event.inputs.warp_enrollment_policy_decision }}" \
+            -var="warp_enrollment_policy_include_emails=${{ github.event.inputs.warp_enrollment_policy_include_emails }}" \
+            -var="warp_enrollment_policy_purpose_justification_required=${{ github.event.inputs.warp_enrollment_policy_purpose_justification_required }}"
