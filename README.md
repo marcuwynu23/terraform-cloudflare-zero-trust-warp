@@ -161,3 +161,52 @@ Reference this repository as a Terraform module in your own configurations:
 | `warp_enrollment_policy_decision` | Policy decision (allow/deny) | `string` | `"allow"` |
 | `warp_enrollment_policy_include_emails` | Emails allowed to enroll | `list(string)` | `["yourgithubemail@example.com"]` |
 | `warp_enrollment_policy_purpose_justification_required` | Require purpose justification | `bool` | `false` |
+## CI/CD Setup (GitHub Actions)
+
+### Prerequisites
+1. **Create a GCS bucket** for Terraform remote state:
+    ```bash
+    gcloud storage buckets create gs://your-terraform-state-bucket \
+      --location=us-central1 \
+      --uniform-bucket-level-access
+    ```
+
+2. **Create a service account** with necessary permissions and generate a JSON key:
+    - GCP Console → IAM & Admin → Service Accounts → Create Service Account
+    - Grant the required roles for this module
+    - Keys → Add Key → Create New Key → JSON
+    - Copy the entire JSON file contents
+
+3. **Add GitHub secrets**:
+
+    | Secret Name | Value |
+    |---|---|
+    | `GCP_SA_KEY` | Full JSON key from step 2 |
+    | `TF_BUCKET_NAME` | Your GCS bucket name |
+    | `TF_BUCKET_PREFIX` | Bucket prefix/path (e.g., `cloudflare-zero-trust-warp`) |
+
+4. **Run the workflow**:
+    - **Apply**: Go to Actions → **CD - Cloudflare Zero Trust WARP (Apply)** → fill in all inputs
+    - **Destroy**: Go to Actions → **CD - Cloudflare Zero Trust WARP (Destroy)** → fill in essential inputs
+
+> Alternatively, create a `backend.tfvars` from `backend.tfvars.example` and run `terraform init -backend-config="backend.tfvars"` for local use.
+
+## Remote State (GCS Backend)
+
+This module uses Google Cloud Storage (GCS) as the Terraform backend for remote state management:
+
+```hcl
+terraform {
+  backend "gcs" {
+    bucket = "your-terraform-state-bucket"
+    prefix = "cloudflare-zero-trust-warp"
+  }
+}
+```
+
+Create a `backend.tfvars` file based on `backend.tfvars.example` and initialize:
+
+```bash
+terraform init -backend-config="backend.tfvars"
+```
+
